@@ -1,0 +1,64 @@
+﻿@using MedicalBeautyDataServ.Models
+@{
+    ViewBag.Title = "韓娜斯美醫診所";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@model Account
+<h2><font color="white">帳號列表</font></h2>
+    <div class="row justify-content-lg-between justify-content-xx-center">
+        <div class="gw py-4 px-lg-5 px-md-4 px-xx-3 py-lg-5 py-xx-4 border  bg-light">
+            <form runat="server" class="gw process-form" id="form1" method="post" action="/CaseDiscuss/Index">
+                <fieldset class="pb-2">
+                    <div class="table-wrap pb-0">
+                        <a href="javascript:void(0)" onclick="window.open('@Url.Action(actionName:"Index", controllerName:"AccountAdd", routeValues:null)', '', 'width=400,height=300');">新增一筆資料</a>
+                        <table class="table table-bordered table-striped mb-0 table-hover" cellspacing="0" width="100%">
+                            <thead>
+                                <tr class="font-weight-bold">
+                                    <th class="text-center">帳號</th>
+                                    <th class="text-center">名稱</th>
+                                    <th class="text-center">權限</th>
+                                    <th class="text-center">分店</th>
+                                    <th class="text-center">建立日期</th>
+                                    <th class="text-center">&nbsp;</th>
+                                </tr>
+                            </thead>
+                            <tbody class="text-center">
+                                @{
+                                    PagedList.IPagedList<Account> accountLst = Model.accountList;
+                                }
+                                @foreach (Account acc in accountLst)
+                                {
+                                    <text>
+                                        <tr class="k-grid">
+                                            <td>
+                                                @acc.AccountId
+                                            </td>
+                                            <td>
+                                                @acc.AccountName
+                                            </td>
+                                            <td>
+                                                @Account.getPrivilegeName(acc.AccountPriv)
+                                            </td>
+                                            <td>
+                                                @Account.getBranchName(acc.branch)
+                                            </td>
+                                            <td>
+                                                @acc.CreateDate
+                                            </td>
+                                            <td>
+                                                <a href="javascript:void(0)" onclick="window.open('/AccountAdd/Index?accountId=@{@acc.AccountId}', '', 'width=400,height=300');"><img src="~/images/Edit.png" width="30" height="30" /></a>
+                                                <a href="javascript:void(0)" onclick="if (confirm('您是否刪除此筆資料')) { window.open('/AccountAdd/Delete?accountId=@{@acc.AccountId}','','width=500,height=500'); }"><img src="~/images/delete.png" width="30" height="30" /></a>
+                                            </td>
+                                        </tr>
+                                    </text>
+                                }
+                            </tbody>
+                        </table>
+                        <div class="pager">
+                            @Html.Pager(Model.accountList.PageSize, Model.accountList.PageNumber, Model.accountList.TotalItemCount)
+                        </div>
+                    </div>
+                </fieldset>
+            </form>
+        </div>
+    </div>

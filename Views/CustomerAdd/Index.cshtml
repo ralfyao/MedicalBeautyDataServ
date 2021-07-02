@@ -1,0 +1,71 @@
+﻿
+@using MedicalBeautyDataServ.Models
+@{
+    ViewBag.Title = "韓娜斯美醫診所";
+    Layout = "~/Views/Shared/_Layout_Blank2.cshtml";
+}
+@model Customer
+<div class="col-xl-9 col-lg-9 col-md-11 pl-xl-0 pl-lg-5">
+    
+    <div class="gw py-4 px-lg-5 px-md-4 px-xx-3 py-lg-5 py-xx-4 border  bg-light">
+        <fieldset>
+            <div class="gw page-list mb-4">
+                <h3 class="font-weight-bold"><font color="white">客戶資料新增/修改</font></h3>
+            </div><!--gw-->
+            <form runat="server" class="gw process-form" id="form1" method="post" action="@{@(Model.id == null ? "/CustomerAdd/Add" : "/CustomerAdd/Edit" ) } ">
+                @Html.ValidationSummary(true)
+                @Html.AntiForgeryToken()
+                <table id="mytable" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>
+                                @Html.HiddenFor(m => m.id)
+                                @Html.LabelFor(model => model.Name, new { @class = "mb-1 order-0 w-20" })
+                            </th>
+                            <td>
+                                @if (Model != null && Model.id != null)
+                                { 
+                                    @Html.TextBoxFor(model => model.Name, new { @class = "form-control order-2", @required = "true", @readonly = "true" })
+                                }
+                                else
+                                {
+                                    @Html.TextBoxFor(model => model.Name, new { @class = "form-control order-2", @required = "true" })
+                                }
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>
+                                @Html.LabelFor(model => model.Gender, new { @class = "mb-1 order-0 w-20" })
+                            </th>
+                            <td>
+                                @Html.DropDownListFor(model => model.Gender, (IEnumerable<SelectListItem>)Model.selectGenderList, new { @class = "form-control order-3" })
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>
+                                @Html.LabelFor(model => model.Tel, new { @class = "mb-1 order-0 w-20" })
+                            </th>
+                            <td>
+                                @Html.TextBoxFor(model => model.Tel, new { @class = "form-control order-2", @required = "true" })
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>
+                                @Html.LabelFor(model => model.BirthDate, new { @class = "mb-1 order-0 w-20" })
+                            </th>
+                            <td>
+                                @Html.TextBoxFor(model => model.BirthDate, new { @class = "form-control order-2", @required = "true", @type = "date" })
+                            </td>
+                        </tr>
+                    </thead>
+                </table>
+
+                <div class="col-12 text-center">
+                    <button type="submit" class="btn btn-lg btn-success px-4 submit_btn" id="save">儲&emsp;&ensp;存</button>
+                </div>
+            </form>
+        </fieldset>
+    </div>
+</div>
+
+

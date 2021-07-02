@@ -1,0 +1,119 @@
+﻿@using MedicalBeautyDataServ.Models
+@{
+    ViewBag.Title = "韓娜斯美醫診所";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    Account account = (Account)Session["Account"];
+}
+@model Customer
+@if (account != null && account.AccountPriv == 3)
+{
+    <h2><font color="white">客戶管理</font></h2>
+}
+else
+{
+    <h2><font color="white">搜尋客戶</font></h2>
+}
+    <div class="row justify-content-lg-between justify-content-xx-center">
+        <div class="gw py-4 px-lg-5 px-md-4 px-xx-3 py-lg-5 py-xx-4 border  bg-light">
+            <!--<table class="ddsmoothmenu" id="mytable">
+                <thead>
+                    <tr>
+                        <td>-->
+                        <font color="white">
+                            @if (account != null && (account.AccountPriv == 3 || account.AccountPriv == 1))
+                            {
+                                <a href="javascript:void(0)" onclick="window.open('@Url.Action(actionName: "Index", controllerName: "CustomerAdd", routeValues: null)', '', 'width=800,height=300');">新增一筆資料</a><br />
+                            }
+                            
+                            <form runat="server" class="gw process-form" id="form3" action="@Url.Action("Index", "CustManage")">
+                                姓名：<input type="text" name="name" id="name" value="" class="input_field" /><br />
+                                性別：<select name="gender" id="gender" class="input_field">
+                                                <option value="">請選擇</option>
+                                                <option value="1">男</option>
+                                                <option value="2">女</option>
+                                            </select> <br />
+                                生日：<input type="date" name="birthday" id="birthday" class="input_field"/><br />
+                                電話：<input type="text" name="tel" id="tel" class="input_field"/><br />
+                                <input type="submit" value="查詢" />
+                            </form>
+                        <!--</td>-->
+                        @if (account != null && account.AccountPriv == 3)
+                        {
+                            <!--<td nowrap="nowrap">-->
+                                <form runat="server" class="gw process-form" id="form1" method="post" enctype="multipart/form-data" action="@Url.Action("UploadCustList", "CustManage")">
+                                    <input type="file" class="form-control-file d-inline-block" id="file_input_list" name="file_input_list" accept=".xlsx" value="">
+                                    <div class="col-md-4 col-sm-4 col-xs-5 col-xx-12 mt-xx-3 text-xs-left text-xx-center">
+                                        <input type="submit" class="btn btn-teal rounded-0" value="上傳客戶清單" />
+                                        @Html.ActionLink("[下載上傳清單範例]", "Index", "DownLoad")
+                                    </div>
+                                </form>
+                            <!--</td>-->
+                        }
+                        </font>
+                    <!--</tr>
+                </thead>
+            </table>-->
+
+            <form runat="server" class="gw process-form" id="form2" method="post" action="/CustManage/Index">
+                <fieldset class="pb-2">
+                    <div class="table-wrap pb-0">
+                        <table class="table table-bordered table-striped mb-0 table-hover" width="100%" cellspacing="0">
+                            <thead>
+                                <tr class="font-weight-bold">
+                                    <th class="text-center">客戶名稱</th>
+                                    <th class="text-center">性別</th>
+                                    <th class="text-center">電話</th>
+                                    <th class="text-center">生日</th>
+                                    @if (account != null && account.AccountPriv == 3)
+                                    {
+                                        <th class="text-center">&nbsp;</th>
+                                    }
+                                    @if (account != null && account.AccountPriv == 1)
+                                    {
+                                        <th class="text-center">&nbsp;</th>
+                                    }
+                                </tr>
+                            </thead>
+                            <tbody class="text-center">
+                                @{
+                                    PagedList.IPagedList<Customer> CustLst = Model.custList;
+                                    int rowidx = 0;
+                                }
+                                @foreach (Customer cus in CustLst)
+                                {
+                                        <tr class="k-grid" @if (rowidx % 2 == 0) {<text>class="spec"</text>} else {<text>class="specalt"</text>}>
+                                            <td class="text-center">
+                                                @cus.Name
+                                            </td>
+                                            <td class="text-center">
+                                                @{@(cus.Gender == 1 ? "男" :"女")}
+                                            </td>
+                                            <td class="text-center">
+                                                @cus.Tel
+                                            </td>
+                                            <td class="text-center">
+                                                @DateTime.Parse(cus.BirthDate).ToString("yyyy/MM/dd")
+                                            </td>
+                                            @if (account != null && (account.AccountPriv == 3 || account.AccountPriv == 1))
+                                            {
+                                                <td class="text-center">
+                                                    <a href="javascript:void(0)" onclick="window.open('/CustomerAdd/Index?customerId=@{@cus.id}', '', 'width=800,height=300,resizable=false');"><img src="~/images/Edit.png" width="30" height="30" /></a>
+                                                    <a href="javascript:void(0)" onclick="if (confirm('您是否刪除此筆資料')) { window.open('/CustomerAdd/Delete?id=@{@cus.id}','','width=500,height=500'); }"><img src="~/images/delete.png" width="30" height="30" /></a>
+                                                </td>
+                                            }
+                                            @if (account != null && account.AccountPriv == 1)
+                                            {
+                                                <td class="text-center"><a href="javascript:void(0)" onclick="window.open('/RecipeManageBlank/Index?customerId=@{@cus.id}', '', 'width=800,height=800,resizable=false');"><font color="#4f6b72">連結至三聯單</font></a></td>
+                                            }
+                                        </tr>
+                                }
+                            </tbody>
+                        </table>
+                        <div class="pager">
+                            @Html.Pager(Model.custList.PageSize, Model.custList.PageNumber, Model.custList.TotalItemCount)
+                        </div>
+                    </div>
+                </fieldset>
+            </form>
+        </div>
+    </div>

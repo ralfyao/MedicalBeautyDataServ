@@ -1,0 +1,35 @@
+﻿@using MedicalBeautyDataServ.Models
+@{
+    ViewBag.Title = "韓娜斯美醫診所";
+}
+@model Account
+
+<div>
+    <h2 class="page-header">
+        <b><font color="white">系統登入</font></b>
+    </h2>
+    <div class="row">
+        <div class="dssmoothmenu">
+            @Html.ValidationSummary(true)
+            @using (Html.BeginForm("Login", "Home", FormMethod.Post, new { ReturnUrl = ViewBag.ReturnUrl }))
+            {
+                @Html.AntiForgeryToken()
+                <fieldset>
+                    <ol>
+                        <li>
+                            @Html.LabelFor(m => m.AccountId)
+                            @Html.TextBoxFor(m => m.AccountId, new { @class = "required input_field", Placeholder = "輸入帳號", @required="true" })
+                        </li>
+                        <li>
+                            @Html.LabelFor(m => m.AccountPwd)
+                            @Html.TextBoxFor(m => m.AccountPwd, new { @class = "required input_field", Placeholder = "輸入密碼", @type = "password", @required = "true" })
+                        </li>
+                        <li>
+                            <input type="submit" class="submit_btn float_l" />
+                        </li>
+                    </ol>
+                </fieldset>
+            }
+        </div>
+    </div>
+</div>

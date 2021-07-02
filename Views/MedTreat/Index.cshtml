@@ -1,0 +1,54 @@
+﻿@using MedicalBeautyDataServ.Models
+@{
+    ViewBag.Title = "韓娜斯美醫診所";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@model MedTreat
+<h2><font color="white">療程列表</font></h2>
+<form runat="server" class="gw process-form" id="form1" method="post" action="/CaseDiscuss/Index">
+    <fieldset class="pb-2">
+        <a href="javascript:void(0)" onclick="window.open('@Url.Action(actionName: "Index", controllerName: "MedTreatAdd", routeValues: null)', '', 'width=400,height=200');">新增一筆資料</a>
+        <table class="ddsmoothmenu" width="100%" id="mytable" cellspacing="0" >
+            <thead>
+                <tr >
+                    <th class="text-center">療程類別</th>
+                    <th class="text-center">療程名稱</th>
+                    <th class="text-center">單位</th>
+                    <th class="text-center">建立日期</th>
+                    <th class="text-center">&nbsp;</th>
+                </tr>
+            </thead>
+            <tbody class="text-center">
+                @{ int rowidx = 0;}
+                @foreach (MedTreat acc in Model.medTreatList)
+                {
+                    <text>
+                        <tr @if (rowidx % 2 == 0) {<text>class="spec"</text> } else { <text>class="specalt"</text>}>
+                            <td class="alt" scope="row">
+                                @acc.MedClass
+                            </td>
+                            <td class="alt">
+                                @acc.Name
+                            </td>
+                            <td class="alt">
+                                @acc.Unit
+                            </td>
+                            <td class="alt">
+                                @acc.CreateDate
+                            </td>
+                            <td class="alt">
+                                <a href="javascript:void(0)" onclick="window.open('/MedTreatAdd/Index?id=@{@acc.id}', '', 'width=400,height=200');"><img src="~/images/Edit.png" width="30" height="30" /></a>
+                                <a href="javascript:void(0)" onclick="if (confirm('您是否刪除此筆資料')) { window.open('/MedTreatAdd/Delete?id=@{@acc.id}','','width=500,height=500'); }"><img src="~/images/delete.png" width="30" height="30" /></a>
+                            </td>
+                        </tr>
+                    </text>
+                    rowidx++;
+                }
+            </tbody>
+        </table>
+        <div class="pager">
+            @Html.Pager(Model.medTreatList.PageSize, Model.medTreatList.PageNumber, Model.medTreatList.TotalItemCount)
+        </div>
+    </fieldset>
+</form>
+

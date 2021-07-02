@@ -1,0 +1,73 @@
+﻿@using MedicalBeautyDataServ.Models
+@{
+    ViewBag.Title = "韓娜斯美醫診所";
+    Layout = "~/Views/Shared/_Layout_Blank2.cshtml";
+}
+@model Account 
+<div class="col-xl-9 col-lg-9 col-md-11 pl-xl-0 pl-lg-5">
+    
+    <div class="gw py-4 px-lg-5 px-md-4 px-xx-3 py-lg-5 py-xx-4 border  bg-light">
+        @Html.ValidationSummary(true)
+        <fieldset>
+            <div class="gw page-list mb-4">
+                <h3 class="font-weight-bold"><font color="white">帳號 新增/修改</font></h3>
+            </div><!--gw-->
+            <form runat="server" class="gw process-form" id="form1" method="post" action="@{@(Model.AccountId == null ? "/AccountAdd/Add" : "/AccountAdd/Edit") } ">
+                @Html.AntiForgeryToken()
+                <table cellspacing="0">
+                    <tr>
+                        <th>
+                            @Html.LabelFor(model => model.AccountId, new { @class = "mb-1 order-0 w-20" })
+                        </th>
+                        <td>
+                            @if (Model != null && !string.IsNullOrEmpty(Model.AccountId))
+                            {
+                                @Html.TextBoxFor(model => model.AccountId, new { @class = "form-control order-2", @required = "true", @readonly = "true" })
+                            }
+                            else
+                            {
+                                @Html.TextBoxFor(model => model.AccountId, new { @class = "form-control order-2", @required = "true" })
+                            }
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            @Html.LabelFor(model => model.AccountPwd, new { @class = "mb-1 order-0 w-20" })
+                        </th>
+                        <td>
+                            @Html.TextBoxFor(model => model.AccountPwd, new { @class = "form-control order-2", @required = "true", @type = "password" })
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            @Html.LabelFor(model => model.AccountName, new { @class = "mb-1 order-0 w-20" })
+                        </th>
+                        <td>
+                            @Html.TextBoxFor(model => model.AccountName, new { @class = "form-control order-2", @required = "true" })
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            @Html.LabelFor(model => model.AccountPriv, new { @class = "mb-1 order-0 w-20" })
+                        </th>
+                        <td>
+                            @Html.DropDownListFor(model => model.AccountPriv, (IEnumerable<SelectListItem>)Model.selectPrivList, new { @class = "form-control order-3" })
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            @Html.LabelFor(model => model.branch, new { @class = "mb-1 order-0 w-20" })
+                        </th>
+                        <td>
+                            @Html.DropDownListFor(model => model.branch, (IEnumerable<SelectListItem>)Model.branchList, new { @class = "form-control order-3" })
+                        </td>
+                    </tr>
+                </table>
+                <div class="col-12 text-center">
+                    <button type="submit" class="btn btn-lg btn-success px-4 submit_btn" id="save">儲&emsp;&ensp;存</button>
+                </div>
+            </form>
+        </fieldset>
+    </div>
+</div>
+

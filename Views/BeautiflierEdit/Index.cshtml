@@ -1,0 +1,142 @@
+﻿@using MedicalBeautyDataServ.Models
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout_Blank2.cshtml";
+    Account account = (Account)Session["Account"];
+}
+@model Recipe
+<h3>@*<font color="white">填寫上麻時間/發數</font>*@</h3>
+<div class="col-xl-9 col-lg-9 col-md-11 pl-xl-0 pl-lg-5">
+    <div class="gw page-list mb-4">
+        <h3><font color="white">填寫上麻時間/發數</font></h3>
+    </div><!--gw-->
+    @Html.ValidationSummary(true)
+    <form runat="server" class="gw process-form" id="form1" method="post" action="/Beautiflier/Update">
+        <fieldset>
+            <div class="col-xl-4 col-sm-6 mb-md-4 mb-xx-3">
+                <div class="input-group input-group-lg align-items-center">
+                    <font color="white">@Html.LabelFor(model => model.RecipeNo, new { @class = "mb-1 order-0 w-20" }) @Model.RecipeNo</font>&nbsp;
+                    @Html.HiddenFor(model => model.RecipeNo)
+                    @Html.HiddenFor(model => model.MedTreatmentID)
+                    <font color="white">@Html.LabelFor(model => model.CustomerId, new { @class = "mb-1 order-0 w-20" }) @Customer.getUnique(new Customer() { id = Model.CustomerId }).Name</font>
+                </div>
+            </div>
+            <table id="nytable" cellspacing="0">
+                <thead>
+                    <tr>
+                        <th>療程類別</th>
+                        <th>療程名稱</th>
+                        <th>部位</th>
+                        <th>單位</th>
+                        @*@if (account.AccountPriv == 1)
+                        {*@
+                            <th>上麻時間</th>
+                        @*}
+                        @if (account.AccountPriv == 2)
+                        {*@
+                            <th>發數</th>
+                        @*  *@
+                        </tr>
+                </thead>
+                <tbody>
+                    @{int idx = 0;}
+                    @foreach (MedTreatDetail detail in Model.medTreatDetails)
+                    {
+                        <tr>
+                            <td>
+                                @detail.MedTreatClass
+                                <input type="hidden" name="MedTreatID@{@idx}" value="@detail.id"/> 
+                            </td>
+                            <td>
+                                @detail.MedName
+                            </td>
+                            <td>
+                                @Recipe.getPositionDesc(detail.MedPosition)
+                            </td>
+                            <td>
+                                @detail.MedQuantity @detail.MedUnit
+                            </td>
+                            <td>
+                                @if (detail.AnesthesiaTime == null)
+                                {
+                                    <input type="datetime-local" name="AnesthesiaTime@{@idx}" value="" @if (account.AccountPriv == 2 || Model.Done == 1) {<text>readonly="readonly"</text> }/>
+                                }
+                                else
+                                { 
+                                    <input type="datetime-local" name="AnesthesiaTime@{@idx}" value="@{@DateTime.Parse(((DateTime)detail.AnesthesiaTime).ToString("yyyy年MM月dd日 HH:mm")).ToString("yyyy-MM-dd'T'HH:mm:ss");}" @if (account.AccountPriv == 2) {<text>readonly="readonly"</text> } onchange="alert(this.value);"/>
+                                }
+                            </td>
+                            <td>
+                                <input type="number" name="AnesthesiaCount@{@idx}" value="@detail.AnesthesiaCount" @if (account.AccountPriv == 1 || Model.Done == 1) {<text>readonly="readonly"</text> } />
+                            </td>
+                        </tr>
+                        idx++;
+                    }
+                </tbody>
+            </table>
+        </fieldset>
+        <div class="col-12 text-center">
+            <button type="submit" class="btn btn-lg btn-success px-4" id="save">儲&emsp;&ensp;存</button>
+        </div>
+        <!--<div class="gw py-4 px-lg-5 px-md-4 px-xx-3 py-lg-5 py-xx-4 border  bg-light">
+            <form runat="server" class="gw process-form" id="form1" method="post" action="/Beautiflier/Update">-->
+        @*<div class="border-top-0 bg-light py-5 px-lg-5 px-md-4 px-xx-3">
+            <div class="row">
+                <div class="col-xx-12">*@
+        @*<div class="row">
+                <div class="col-xl-4 col-sm-6 mb-md-4 mb-xx-3">
+                    <div class="input-group input-group-lg align-items-center">
+                        @Html.LabelFor(model => model.RecipeNo, new { @class = "mb-1 order-0 w-20" }) @Model.RecipeNo
+                        @Html.HiddenFor(model => model.RecipeNo)
+                        @Html.HiddenFor(model => model.MedTreatmentID)
+                    </div>
+                </div>
+            </div>*@
+        @*<div class="row">
+                <div class="col-xl-4 col-sm-6 mb-md-4 mb-xx-3">
+                    <div class="input-group input-group-lg align-items-center">
+                        @Html.LabelFor(model => model.MedTreatment, new { @class = "mb-1 order-0 w-20" }) @SystemConfig.getDesc("Beautiflier", "MedTreat", Model.MedTreatment.ToString())
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xl-4 col-sm-6 mb-md-4 mb-xx-3">
+                    <div class="input-group input-group-lg align-items-center">
+                        @Html.LabelFor(model => model.Position, new { @class = "mb-1 order-0 w-20" }) @SystemConfig.getDesc("Beautiflier", "Position", Model.Position.ToString())
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xl-4 col-sm-6 mb-md-4 mb-xx-3">
+                    <div class="input-group input-group-lg align-items-center">
+                        @Html.LabelFor(model => model.Unit, new { @class = "mb-1 order-0 w-20" }) @Model.Unit.ToString()U
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xl-4 col-sm-6 mb-md-4 mb-xx-3">
+                    <div class="input-group input-group-lg align-items-center">
+                        @Html.LabelFor(model => model.AnesthesiaTime, new { @class = "mb-1 order-0 w-20" })
+                        @Html.TextBoxFor(model => model.AnesthesiaTime, new { @class = "form-control order-2", @required = "true", type = "datetime-local" })
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xl-4 col-sm-6 mb-md-4 mb-xx-3">
+                    <div class="input-group input-group-lg align-items-center">
+                        @Html.LabelFor(model => model.AnesthesiaCount, new { @class = "mb-1 order-0 w-20" })
+                        @Html.TextBoxFor(model => model.AnesthesiaCount, new { @class = "form-control order-2", @required = "true", type = "number", min = "0" })
+                    </div>
+                </div>
+            </div>*@
+        @*</div>
+                </div>
+            </div>*@
+        <!--<div class="col-12 text-center">
+                    <button type="submit" class="btn btn-lg btn-success px-4" id="save">儲&emsp;&ensp;存</button>
+                </div>
+            </form>
+        </div>-->
+    </form>
+</div>
+

@@ -1,0 +1,146 @@
+﻿@using MedicalBeautyDataServ.Models
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout2.cshtml";
+    Account account = (Account)Session["Account"];
+}
+@model Recipe
+<div class="col-xl-9 col-lg-9 col-md-11 pl-xl-0 pl-lg-5">
+    <div class="gw page-list mb-4">
+        <h3 class="font-weight-bold"><font color="white">輸入上麻資料</font></h3>
+    </div><!--gw-->
+    <div class="row">
+        <div class="col-md-12">
+            <div class="gw py-4 px-lg-5 px-md-4 px-xx-3 py-lg-5 py-xx-4 border  bg-light">
+                @Html.ValidationSummary(true)
+                <div class="table-wrap pb-0">
+                    待處理清單
+                    <table class="table table-bordered table-striped mb-0 table-hover" width="100%" cellspacing="0">
+                        <thead>
+                            <tr class="font-weight-bold">
+                                <th class="text-center">三聯單號</th>
+                                <th class="text-center">客戶名稱</th>
+                                <th class="text-center">療程內容</th>
+                                <th class="text-center">處理狀態</th>
+                                @if (account != null && account.AccountPriv == 1)
+                                {
+                                    <th class="text-center">&nbsp;</th>
+                                }
+                            </tr>
+                            @if (account != null)
+                            {
+                                //醫美師列表
+                                List<Recipe> ls = new List<Recipe>();
+                                //if (account.AccountPriv == 1)
+                                //{
+                                ls = Model.UnProcessedLists;
+
+                                @*}
+                        //護士列表
+                        if (account.AccountPriv == 2)
+                        {
+                            ls = Model.UnProcessedListsNurse;
+                        }*@
+                                foreach (Recipe r in ls)
+                                {
+                                    <tr class="k-grid">
+                                        <td>@r.RecipeNo <input type="hidden" name="@{@r.RecipeNo}_RecipeNo" id="@{@r.RecipeNo}_RecipeNo" value="@r.RecipeNo"></td>
+                                        <td>@Customer.getUnique(new Customer() { id = r.CustomerId }).Name</td>
+                                        <td>
+                                            <a href="javascript:void(0)" onclick="window.open('/BeautiflierEdit/Index?recipeNo=@{@r.RecipeNo}', '', 'width=800,height=600');"><font color="#aaaaaa">療程內容</font></a>
+                                        </td>
+                                        <td>
+                                            @{@(r.Done == null || r.Done == 0 ? "未完成" : "已完成")}
+                                        </td>
+                                        @if (account != null && account.AccountPriv == 1)
+                                        {
+                                            @*if (r.Done == 0 || r.Done == null)
+                                    {
+                                    <td>
+                                        <a href="javascript:void(0)" onclick="window.open('/BeautiflierEdit/Complete?recipeNo=@{@r.RecipeNo}', '', 'width=800,height=600');"><font color="#aaaaaa">完成此單</font></a>
+                                    </td>
+                                    }*@
+                                            if (r.Done == 1)
+                                            {
+                                                <td>
+                                                    <a href="javascript:void(0)" onclick="window.open('/BeautiflierEdit/UnComplete?recipeNo=@{@r.RecipeNo}', '', 'width=800,height=600');"><font color="#aaaaaa">恢復未完成</font></a>
+                                                </td>
+                                            }
+                                            else
+                                            {
+                                                <td></td>
+                                            }
+                                        }
+                                    </tr>
+                                }
+                            }
+
+                        </thead>
+                    </table>
+                </div>
+                <br />
+                <div class="table-wrap pb-0">
+                    @if (account != null && account.AccountPriv == 2)
+                    {
+                        <text>
+                        已處理清單
+                        <table class="table table-bordered table-striped mb-0 table-hover" width="100%" cellspacing="0">
+                            <thead>
+                                <tr class="font-weight-bold">
+                                    <th class="text-center">三聯單號</th>
+                                    <th class="text-center">客戶名稱</th>
+                                    <th class="text-center">療程內容</th>
+                                    <th class="text-center">&nbsp;</th>
+                                </tr>
+                            </thead>
+                            @foreach (Recipe r in Model.ProcessedPagedList)
+                            {
+                                <tr class="k-grid">
+                                    <td>
+                                        @r.RecipeNo
+                                    </td>
+                                    <td>@Customer.getUnique(new Customer() { id = r.CustomerId }).Name</td>
+                                    <td>
+                                        <a href="javascript:void(0)" onclick="window.open('/BeautiflierEdit/Index?recipeNo=@{@r.RecipeNo}', '', 'width=800,height=600');"><font color="#aaaaaa">療程內容</font></a>
+                                    </td>
+                                    <td>
+                                        <a href="javascript:void(0)" onclick="window.open('/BeautiflierEdit/UnComplete?recipeNo=@{@r.RecipeNo}', '', 'width=800,height=600');"><font color="#aaaaaa">恢復未完成</font></a>
+                                    </td>
+                                </tr>
+                            }
+                        </table>
+                        </text>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    function send(recipeNo) {
+        window.open('/BeautiflierEdit/Index?recipeNo='+recipeNo, '', 'width=1000,height=800');
+        //alert($('#' + recipeNo + '_RecipeNo').val() + "," + $('#' + recipeNo + '_MedTreatment').val());
+        //$.ajax({
+        //    type: "post",
+        //    url: "/Beautiflier/Update",
+        //    data: {
+        //        RecipeNo: $('#' + recipeNo + '_RecipeNo').val(),
+        //        MedTreatment: $('#' + recipeNo + '_MedTreatment').val(),
+        //        Position: $('#' + recipeNo + '_Position').val(),
+        //        Unit: $('#' + recipeNo + '_Unit').val(),
+        //        AnesthesiaTime: $('#' + recipeNo + '_Time').val(),
+        //        AnesthesiaCount: $('#' + recipeNo + '_Count').val(),
+        //        CreateUser: $('#' + recipeNo + '_CreateUser').val(),
+        //        CreateDate: $('#' + recipeNo + '_CreateDate').val(),
+        //        CustomerId: $('#' + recipeNo + '_CustomerId').val()
+        //    },
+        //    success: function (data) {
+        //        alert("執行成功");
+        //        window.location.reload();
+        //    },
+        //    error: function (data) {
+        //        alert('無法送出');
+        //    }
+        //});
+    }
+</script>
